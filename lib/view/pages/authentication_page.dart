@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:login_list_products/controller/auth_controller.dart';
+import 'package:login_list_products/view/widgets/auth_form_field_widget.dart';
 
 class AuthenticationPage extends HookConsumerWidget {
   AuthenticationPage({super.key});
@@ -11,8 +11,9 @@ class AuthenticationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userNameController = useTextEditingController();
-    final passwordController = useTextEditingController();
+    final userNameController = useTextEditingController(text: 'kminchelle');
+    final passwordController = useTextEditingController(text: '0lelplR');
+    final loading = useState(false);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -58,47 +59,34 @@ class AuthenticationPage extends HookConsumerWidget {
                 height: 48,
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (formKey.currentState!.validate()) {
-                    log("message");
+                    FocusScope.of(context).unfocus();
+                    loading.value = true;
+                    await ref.read(authControllerProvider.notifier).loginUser(
+                        context,
+                        userName: userNameController.text,
+                        password: passwordController.text);
+                    loading.value = false;
                   }
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 48),
                 ),
-                child: const Text("Login"),
+                child: loading.value
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 3,
+                        ),
+                      )
+                    : const Text("Login"),
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class AuthFormFieldWidget extends StatelessWidget {
-  const AuthFormFieldWidget({
-    super.key,
-    required this.controller,
-    required this.hintText,
-    required this.validator,
-  });
-
-  final TextEditingController controller;
-  final String hintText;
-  final String? Function(String? value)? validator;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      validator: validator,
     );
   }
 }
