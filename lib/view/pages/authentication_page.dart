@@ -11,8 +11,8 @@ class AuthenticationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userNameController = useTextEditingController(text: 'kminchelle');
-    final passwordController = useTextEditingController(text: '0lelplR');
+    final userNameController = useTextEditingController();
+    final passwordController = useTextEditingController();
     final loading = useState(false);
 
     return Scaffold(
