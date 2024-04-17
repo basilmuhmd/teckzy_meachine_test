@@ -47,7 +47,7 @@ class AuthController extends _$AuthController {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-              builder: (context) => const ProductScreen(),
+              builder: (context) => const ProductPage(),
             ),
             (route) => false);
       });
